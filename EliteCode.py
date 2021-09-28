@@ -77,30 +77,32 @@ class EliteCode:
 
     #next 2 functions from:
     #https://thecleverprogrammer.com/2020/09/25/text-editor-gui-with-python/
-    def openNextProblem(problems, txt_edit, window, testResults):
+    def openNextProblem(problems, txt_edit, window, testResults, label):
         """Open a file for editing."""
-        testResults['text'] = ""
-        if txt_edit.get(1.0, tk.END) != "\n":
-            EliteCode.saveProblemFile(problems.curr(), txt_edit, window)
+        if label['text'] != "xxx":
+            testResults['text'] = ""
+            if txt_edit.get(1.0, tk.END) != "\n":
+                EliteCode.saveProblemFile(problems.curr(), txt_edit, window, label)
+                txt_edit.delete(1.0, tk.END)
+            filepath = problems.next()
+            if not filepath:
+                return
             txt_edit.delete(1.0, tk.END)
-        filepath = problems.next()
-        if not filepath:
-            return
-        txt_edit.delete(1.0, tk.END)
-        with open(filepath, "r") as input_file:
-            text = input_file.read()
-            txt_edit.insert(tk.END, text)
-        window.title(f"EliteCode - Exam in Progress")
+            with open(filepath, "r") as input_file:
+                text = input_file.read()
+                txt_edit.insert(tk.END, text)
+            window.title(f"EliteCode - Exam in Progress")
 
-    def saveProblemFile(problemFp, txt_edit, window):
+    def saveProblemFile(problemFp, txt_edit, window, label):
         """Save the current file as a new file."""
-        filepath = problemFp
-        if not filepath:
-            return
-        with open(filepath, "w") as output_file:
-            text = txt_edit.get(1.0, tk.END)
-            output_file.write(text)
-        window.title(f"EliteCode - Save Complete")
+        if label['text'] != "xxx":
+            filepath = problemFp
+            if not filepath:
+                return
+            with open(filepath, "w") as output_file:
+                text = txt_edit.get(1.0, tk.END)
+                output_file.write(text)
+            window.title(f"EliteCode - Save Complete")
         
     def loadProblem(problems, timeLimit, problemsMD):
         # somehow open the problem on screen -- with timer and allowing person to edit
@@ -122,9 +124,9 @@ class EliteCode:
         testResults.grid(row=6, column=0, sticky='ew', padx=5)
 
         btn_start = tk.Button(fr_buttons, text="Start Practicing", command=lambda: EliteCode.startCountdown(timeLimit, label, problems, txt_edit, window, problemsMD, testResults))
-        btn_next = tk.Button(fr_buttons, text="Next Problem", command=lambda: EliteCode.openNextProblem(problems, txt_edit, window, testResults))
-        btn_save = tk.Button(fr_buttons, text="Save", command=lambda: EliteCode.saveProblemFile(problems.curr(), txt_edit, window))
-        btn_test = tk.Button(fr_buttons, text="Run Tests", command=lambda: EliteCode.testProblem(problemsMD[problems.getIndex()], problems.curr(), testResults, txt_edit, window))
+        btn_next = tk.Button(fr_buttons, text="Next Problem", command=lambda: EliteCode.openNextProblem(problems, txt_edit, window, testResults, label))
+        btn_save = tk.Button(fr_buttons, text="Save", command=lambda: EliteCode.saveProblemFile(problems.curr(), txt_edit, window, label))
+        btn_test = tk.Button(fr_buttons, text="Run Tests", command=lambda: EliteCode.testProblem(problemsMD[problems.getIndex()], problems.curr(), testResults, txt_edit, window, label))
         
         btn_start.grid(row=1, column=0, sticky="ew", padx=5, pady=15)
         btn_next.grid(row=2, column=0, sticky="ew", padx=5, pady=5)
@@ -139,13 +141,13 @@ class EliteCode:
     def startCountdown(timeLimit, label, problems, txt_edit, window, problemsMD, testResults):
         if label['text'] == "xxx":
             print("Starting Exam")
-            EliteCode.openNextProblem(problems, txt_edit, window, testResults)
             EliteCode.countdown(timeLimit, label, window, problems, txt_edit, problemsMD, testResults)
+            EliteCode.openNextProblem(problems, txt_edit, window, testResults, label)
 
     # taken from:
     # https://stackoverflow.com/questions/34029223/basic-tkinter-countdown-timer
     def countdown(count, label, window, problems, txt_edit, problemsMD, testResults):
-        # change text in label        
+        # change text in label
         label['text'] = count
 
         if count > 0:
@@ -156,16 +158,17 @@ class EliteCode:
             txt_edit.delete(1.0, tk.END)
             EliteCode.testCode(problems, problemsMD, testResults)
 
-    def testProblem(problemMD, problem, testResults, txt_edit, window):
-        EliteCode.saveProblemFile(problem, txt_edit, window)
-        print("Running tests for:")
-        print(problemMD['name'])
-        __currProblem = __import__(("Problems." + problemMD["name"]), globals(), locals(), [problemMD["name"]], 0)
-        __function = getattr(__currProblem, problemMD["name"])
-        result = __function(1,2)
-        testResults['text'] = result #         Testing.runTests(__function, problemMD) -- ideally import another class using same method as above and run tests from it,
-                                              #                                                    outputting all the results as a string that can be used here
-        print(__function(1, 2))
+    def testProblem(problemMD, problem, testResults, txt_edit, window, label):
+        if label['text'] != "xxx":
+            EliteCode.saveProblemFile(problem, txt_edit, window, label)
+            print("Running tests for:")
+            print(problemMD['name'])
+            __currProblem = __import__(("Problems." + problemMD["name"]), globals(), locals(), [problemMD["name"]], 0)
+            __function = getattr(__currProblem, problemMD["name"])
+            result = __function(1,2)
+            testResults['text'] = result #         Testing.runTests(__function, problemMD) -- ideally import another class using same method as above and run tests from it,
+                                                  #                                                    outputting all the results as a string that can be used here
+            print(__function(1, 2))
 
     def testCode(problems, problemsMD, testResults):
         #do stuff
