@@ -24,11 +24,10 @@ class CircularLinkedList:
         return self.items[self.currPtr]
         
     def next(self):
-        currItem = self.items[self.currPtr]
         self.currPtr += 1
         if self.currPtr >= len(self.items):
             self.currPtr = 0
-        return currItem
+        return self.items[self.currPtr]
 
 class EliteCode:
     def fetchRandomProblems(numProblems, difficulties):
@@ -75,11 +74,12 @@ class EliteCode:
 
     #next 2 functions from:
     #https://thecleverprogrammer.com/2020/09/25/text-editor-gui-with-python/
-    def openNextProblem(saveFp, problemFp, txt_edit, window):
+    def openNextProblem(problems, txt_edit, window):
         """Open a file for editing."""
         if txt_edit.get(1.0, tk.END) != "\n":
-            EliteCode.saveProblemFile(saveFp, txt_edit, window)
-        filepath = problemFp
+            EliteCode.saveProblemFile(problems.curr(), txt_edit, window)
+            txt_edit.delete(1.0, tk.END)
+        filepath = problems.next()
         if not filepath:
             return
         txt_edit.delete(1.0, tk.END)
@@ -112,7 +112,7 @@ class EliteCode:
         label.grid(row=0, column=0, sticky='ew', padx=5)
         
         btn_start = tk.Button(fr_buttons, text="Start Practicing", command=lambda: EliteCode.startCountdown(timeLimit, label, problems, txt_edit, window, problemsMD))
-        btn_next = tk.Button(fr_buttons, text="Next Problem", command=lambda: EliteCode.openNextProblem(problems.curr(), problems.next(), txt_edit, window))
+        btn_next = tk.Button(fr_buttons, text="Next Problem", command=lambda: EliteCode.openNextProblem(problems, txt_edit, window))
         btn_save = tk.Button(fr_buttons, text="Save", command=lambda: EliteCode.saveProblemFile(problems.curr(), txt_edit, window))
         
         btn_start.grid(row=1, column=0, sticky="ew", padx=5, pady=15)
@@ -127,7 +127,7 @@ class EliteCode:
     def startCountdown(timeLimit, label, problems, txt_edit, window, problemsMD):
         if label['text'] == "xxx":
             print("Starting Exam")
-            EliteCode.openNextProblem(problems.curr(), problems.next(), txt_edit, window)
+            EliteCode.openNextProblem(problems, txt_edit, window)
             EliteCode.countdown(timeLimit, label, window, problems, txt_edit, problemsMD)
 
     # taken from:
@@ -146,8 +146,9 @@ class EliteCode:
 
     def testProblem(problemMD):
         print(problemMD['name'])
-        __currProblem = __import__("Problems." + problemMD["name"], globals(), locals(), [], 0)
-        print(__currProblem.Problem.problemMD["name"](1, 2))
+        print(("Problems." + problemMD["name"]))
+        __currProblem = __import__(("Problems." + problemMD["name"]), globals(), locals(), [problemMD["name"]], 0)
+        print(__currProblem(1, 2))
 
     def testCode(problems, problemsMD):
         #do stuff
