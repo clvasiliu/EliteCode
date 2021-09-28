@@ -4,6 +4,9 @@
 import urllib.request
 import random
 import json
+import tkinter as tk
+from tkinter.filedialog import askopenfilename, asksaveasfilename
+
 from pathlib import Path
 
 class EliteCode:
@@ -30,23 +33,82 @@ class EliteCode:
         jsonData = json.load(f)
         print(len(jsonData))
         
-        # using https://gist.github.com/oculushut/193a7c2b6002d808a791
         #pick n random numbers within the num problems in the fetched file and make sure they are not the same
         for i in range(0, numProblems):
             newRand = random.randrange(0, len(jsonData))
             if newRand not in indicies:
                 indicies.append(newRand)
-                problems.append(problemList[i])
+                problems.append(jsonData[str(newRand)])
+        print(problems)
         return problems
+
+    #next 2 functions from:
+    #https://thecleverprogrammer.com/2020/09/25/text-editor-gui-with-python/
+    def openNextProblem():
+        """Open a file for editing."""
+        filepath = askopenfilename(
+            filetypes=[("Text Files", "*.txt"), ("All Files", "*.*")]
+        )
+        if not filepath:
+            return
+        txt_edit.delete(1.0, tk.END)
+        with open(filepath, "r") as input_file:
+            text = input_file.read()
+            txt_edit.insert(tk.END, text)
+        window.title(f"Thecleverprogrammer - {filepath}")
+
+    def saveProblemFile():
+        """Save the current file as a new file."""
+        filepath = asksaveasfilename(
+            defaultextension="txt",
+            filetypes=[("Text Files", "*.txt"), ("All Files", "*.*")],
+        )
+        if not filepath:
+            return
+        with open(filepath, "w") as output_file:
+            text = txt_edit.get(1.0, tk.END)
+            output_file.write(text)
+        window.title(f"Thecleverprogrammer - {filepath}")
     
-    def loadProblem(problem):
+    def loadProblem(problem, timeLimit):
         # somehow open the problem on screen -- with timer and allowing person to edit
-        print("test")
+        window = tk.Tk()
+        window.title("Thecleverprogrammer")
+        window.rowconfigure(0, minsize=800, weight=1)
+        window.columnconfigure(1, minsize=800, weight=1)
+
+        txt_edit = tk.Text(window)
+        fr_buttons = tk.Frame(window, relief=tk.RAISED, bd=2)
+        btn_open = tk.Button(fr_buttons, text="Next Problem", command=EliteCode.openNextProblem)
+        btn_save = tk.Button(fr_buttons, text="Save", command=EliteCode.saveProblemFile)
+
+        btn_open.grid(row=0, column=0, sticky="ew", padx=5, pady=5)
+        btn_save.grid(row=1, column=0, sticky="ew", padx=5)
+
+        fr_buttons.grid(row=0, column=0, sticky="ns")
+        txt_edit.grid(row=0, column=1, sticky="nsew")
+
+        label = tk.Label(window)
+        label.place(x=35, y=75)
+        EliteCode.countdown(timeLimit, label, window)
         
-    def startTest(numProblems = 2, timer = 115, difficulties = [3,1]):
+        window.mainloop()
+
+    # taken from:
+    # https://stackoverflow.com/questions/34029223/basic-tkinter-countdown-timer
+    def countdown(count, label, window):
+        # change text in label        
+        label['text'] = count
+
+        if count > 0:
+            # call countdown again after 60000ms (1min)
+            window.after(60000, EliteCode.countdown, count-1, label, window)
+    
+    def startTest(numProblems = 2, timeLimit = 115):
         problems = []
         fetchRandomProblems(numProblems, difficulties)
         for problem in problems:
-            loadProblem(problem)
+            loadProblem(problem, timeLimit)
 
-EliteCode.fetchRandomProblems(2, [1])
+problems = EliteCode.fetchRandomProblems(2, [1])
+EliteCode.loadProblem(problems[0], 100)
