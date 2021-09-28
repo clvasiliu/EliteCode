@@ -179,10 +179,8 @@ class EliteCode:
             __functionTest = getattr(__currTests, "test" + problemMD["name"])
             __function = getattr(__currProblem, problemMD["name"])
             result = __functionTest(__function)
-            testResults['text'] = result #         Testing.runTests(__function, problemMD) -- ideally import another class using same method as above and run tests from it,
-                                                  #                                                    outputting all the results as a string that can be used here
-            print(__function(1, 2))
-
+            testResults['text'] = result
+            
     def testCode(problems, problemsMD, testResults, testFps, txt_edit, window, label):
         #do stuff
         #print(Problems.(problems.curr)(1, 2))
