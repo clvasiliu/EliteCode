@@ -82,7 +82,7 @@ class EliteCode:
             print("Now Downloading:")
             print("test" + problem['name'])
             problemUrl = problem["testurl"]
-            filename, headers = urllib.request.urlretrieve(problemUrl, filename= base_path / ('Easy/test' + problem['name'] + '.py'))
+            filename, headers = urllib.request.urlretrieve(problemUrl, filename= base_path / ('Tests/test' + problem['name'] + '.py'))
             fps.append(filename)
         return CircularLinkedList(fps)
 
@@ -163,7 +163,7 @@ class EliteCode:
 
         if count > 0:
             # call countdown again after 60000ms (1min)
-            window.after(60000, EliteCode.countdown, count-1, label, window, problems, txt_edit, problemsMD)
+            window.after(60000, EliteCode.countdown, count-1, label, window, problems, txt_edit, problemsMD, testResults, testFps)
         else:
             EliteCode.saveProblemFile(problems.curr(), txt_edit, window)
             txt_edit.delete(1.0, tk.END)
@@ -174,9 +174,11 @@ class EliteCode:
             EliteCode.saveProblemFile(problem, txt_edit, window, label)
             print("Running tests for:")
             print(problemMD['name'])
+            __currTests = __import__(("Tests.test" + problemMD["name"]), globals(), locals(), ["test" + problemMD["name"]], 0)
             __currProblem = __import__(("Problems." + problemMD["name"]), globals(), locals(), [problemMD["name"]], 0)
+            __functionTest = getattr(__currTests, "test" + problemMD["name"])
             __function = getattr(__currProblem, problemMD["name"])
-            result = __function(1,2)
+            result = __functionTest(__function)
             testResults['text'] = result #         Testing.runTests(__function, problemMD) -- ideally import another class using same method as above and run tests from it,
                                                   #                                                    outputting all the results as a string that can be used here
             print(__function(1, 2))
