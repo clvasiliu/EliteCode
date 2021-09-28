@@ -181,7 +181,7 @@ class EliteCode:
             result = __functionTest(__function)
             testResults['text'] = result
             
-    def testCode(problems, problemsMD, testResults, testFps, txt_edit, window, label):
+    def testCode(problems, problemsMD, testResults, testFps, txt_edit, window, label, testFps):
         #do stuff
         #print(Problems.(problems.curr)(1, 2))
         print("Running all tests on code")
