@@ -1,5 +1,5 @@
 import hashlib
-def testSumGame(function):
+def testsumGame(function):
   results = str(function(2, 1))
   resultHash = hashlib.md5(results.encode()).hexdigest()
   if resultHash == 'eccbc87e4b5ce2fe28308fd9f2a7baf3':
