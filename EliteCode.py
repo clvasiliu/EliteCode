@@ -165,9 +165,9 @@ class EliteCode:
             # call countdown again after 60000ms (1min)
             window.after(60000, EliteCode.countdown, count-1, label, window, problems, txt_edit, problemsMD, testResults, testFps)
         else:
-            EliteCode.saveProblemFile(problems.curr(), txt_edit, window)
+            EliteCode.saveProblemFile(problems.curr(), txt_edit, window, label)
             txt_edit.delete(1.0, tk.END)
-            EliteCode.testCode(problems, problemsMD, testResults, testFps)
+            EliteCode.testCode(problems, problemsMD, testResults, testFps, txt_edit, window, label, testFps)
 
     def testProblem(problemMD, problem, testResults, txt_edit, window, label, testFps):
         if label['text'] != "xxx":
@@ -183,13 +183,13 @@ class EliteCode:
                                                   #                                                    outputting all the results as a string that can be used here
             print(__function(1, 2))
 
-    def testCode(problems, problemsMD, testResults, testFps):
+    def testCode(problems, problemsMD, testResults, testFps, txt_edit, window, label):
         #do stuff
         #print(Problems.(problems.curr)(1, 2))
         print("Running all tests on code")
         for problemMD in problemsMD:
             print(problemMD)
-            EliteCode.testProblem(problemMD, testResults, testFps)
+            EliteCode.testProblem(problemMD, testResults, testFps, txt_edit, window, label, testFps)
     
     def startTest(numProblems = 2, timeLimit = 115, difficulties = [1, 1]):
         problems = EliteCode.fetchRandomProblems(numProblems, difficulties)
