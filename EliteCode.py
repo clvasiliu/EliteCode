@@ -17,7 +17,7 @@ class CircularLinkedList:
         self.items = items
         self.currPtr = 0
 
-    def setPrt(self, num):
+    def setPtr(self, num):
         self.currPtr = num
         
     def curr(self):
@@ -146,12 +146,11 @@ class EliteCode:
         #do stuff
         #print(Problems.(problems.curr)(1, 2))
         problems.setPtr(0)
-        problemsMD.setPtr(0)
-        ptr = problems.curr()
-        print(problems.curr())
-        while problems.next() != ptr:
-            print(problems.curr())
-            __import__("from Problems." + (problems.curr()['name']) + "import Problems")
+        problemsMDs.setPtr(0)
+        ptr = problemsMD.curr()
+        while problemsMD.next() != ptr:
+            print(problemsMD.curr())
+            __import__("from Problems." + (problemsMD.curr()['name']) + "import Problems")
         print("testing code")
     
     def startTest(numProblems = 2, timeLimit = 115, difficulties = [1, 1]):
