@@ -75,6 +75,17 @@ class EliteCode:
             fps.append(filename)
         return CircularLinkedList(fps)
 
+    def downloadTests(problems):
+        base_path = Path(__file__).parent
+        fps = []
+        for problem in problems:
+            print("Now Downloading:")
+            print("test" + problem['name'])
+            problemUrl = problem["testurl"]
+            filename, headers = urllib.request.urlretrieve(problemUrl, filename= base_path / ('Easy/test' + problem['name'] + '.py'))
+            fps.append(filename)
+        return CircularLinkedList(fps)
+
     #next 2 functions from:
     #https://thecleverprogrammer.com/2020/09/25/text-editor-gui-with-python/
     def openNextProblem(problems, txt_edit, window, testResults, label):
@@ -104,7 +115,7 @@ class EliteCode:
                 output_file.write(text)
             window.title(f"EliteCode - Save Complete")
         
-    def loadProblem(problems, timeLimit, problemsMD):
+    def loadProblem(problems, timeLimit, problemsMD, testFps):
         # somehow open the problem on screen -- with timer and allowing person to edit
         window = tk.Tk()
         window.title("EliteCode")
@@ -123,10 +134,10 @@ class EliteCode:
         testResults = tk.Label(fr_buttons)
         testResults.grid(row=6, column=0, sticky='ew', padx=5)
 
-        btn_start = tk.Button(fr_buttons, text="Start Practicing", command=lambda: EliteCode.startCountdown(timeLimit, label, problems, txt_edit, window, problemsMD, testResults))
+        btn_start = tk.Button(fr_buttons, text="Start Practicing", command=lambda: EliteCode.startCountdown(timeLimit, label, problems, txt_edit, window, problemsMD, testResults, testFps))
         btn_next = tk.Button(fr_buttons, text="Next Problem", command=lambda: EliteCode.openNextProblem(problems, txt_edit, window, testResults, label))
         btn_save = tk.Button(fr_buttons, text="Save", command=lambda: EliteCode.saveProblemFile(problems.curr(), txt_edit, window, label))
-        btn_test = tk.Button(fr_buttons, text="Run Tests", command=lambda: EliteCode.testProblem(problemsMD[problems.getIndex()], problems.curr(), testResults, txt_edit, window, label))
+        btn_test = tk.Button(fr_buttons, text="Run Tests", command=lambda: EliteCode.testProblem(problemsMD[problems.getIndex()], problems.curr(), testResults, txt_edit, window, label, testFps))
         
         btn_start.grid(row=1, column=0, sticky="ew", padx=5, pady=15)
         btn_next.grid(row=2, column=0, sticky="ew", padx=5, pady=5)
@@ -138,15 +149,15 @@ class EliteCode:
 
         window.mainloop()
 
-    def startCountdown(timeLimit, label, problems, txt_edit, window, problemsMD, testResults):
+    def startCountdown(timeLimit, label, problems, txt_edit, window, problemsMD, testResults, testFps):
         if label['text'] == "xxx":
             print("Starting Exam")
-            EliteCode.countdown(timeLimit, label, window, problems, txt_edit, problemsMD, testResults)
+            EliteCode.countdown(timeLimit, label, window, problems, txt_edit, problemsMD, testResults, testFps)
             EliteCode.openNextProblem(problems, txt_edit, window, testResults, label)
 
     # taken from:
     # https://stackoverflow.com/questions/34029223/basic-tkinter-countdown-timer
-    def countdown(count, label, window, problems, txt_edit, problemsMD, testResults):
+    def countdown(count, label, window, problems, txt_edit, problemsMD, testResults, testFps):
         # change text in label
         label['text'] = count
 
@@ -156,9 +167,9 @@ class EliteCode:
         else:
             EliteCode.saveProblemFile(problems.curr(), txt_edit, window)
             txt_edit.delete(1.0, tk.END)
-            EliteCode.testCode(problems, problemsMD, testResults)
+            EliteCode.testCode(problems, problemsMD, testResults, testFps)
 
-    def testProblem(problemMD, problem, testResults, txt_edit, window, label):
+    def testProblem(problemMD, problem, testResults, txt_edit, window, label, testFps):
         if label['text'] != "xxx":
             EliteCode.saveProblemFile(problem, txt_edit, window, label)
             print("Running tests for:")
@@ -170,17 +181,18 @@ class EliteCode:
                                                   #                                                    outputting all the results as a string that can be used here
             print(__function(1, 2))
 
-    def testCode(problems, problemsMD, testResults):
+    def testCode(problems, problemsMD, testResults, testFps):
         #do stuff
         #print(Problems.(problems.curr)(1, 2))
         print("Running all tests on code")
         for problemMD in problemsMD:
             print(problemMD)
-            EliteCode.testProblem(problemMD, testResults)
+            EliteCode.testProblem(problemMD, testResults, testFps)
     
     def startTest(numProblems = 2, timeLimit = 115, difficulties = [1, 1]):
         problems = EliteCode.fetchRandomProblems(numProblems, difficulties)
         problemFps = EliteCode.downloadProblems(problems)
-        EliteCode.loadProblem(problemFps, timeLimit, problems)
+        testFps = EliteCode.downloadTests(problems)
+        EliteCode.loadProblem(problemFps, timeLimit, problems, testFps)
 
 EliteCode.startTest(timeLimit = 1)
