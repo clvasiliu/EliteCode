@@ -11,12 +11,17 @@ class EliteCode:
         problems = []
         indicies = []
         #fetch list of problems
-        url = "https://raw.githubusercontent.com/clvasiliu/EliteCode/main/Easy/problemList.txt"
+        urlEasy = "https://raw.githubusercontent.com/clvasiliu/EliteCode/main/Easy/problemList.txt"
+        urlMedium = "https://raw.githubusercontent.com/clvasiliu/EliteCode/main/Medium/problemList.txt"
+        urlHard = "https://raw.githubusercontent.com/clvasiliu/EliteCode/main/Hard/problemList.txt"
         print("Fetching latest problem list")
         base_path = Path(__file__).parent
-        print(base_path)
-        filename, headers = urllib.request.urlretrieve(url, filename= base_path / "/Easy/problemList.txt")
-        print(filename)
+        filenameEasy, headersEasy = urllib.request.urlretrieve(urlEasy, filename= base_path / 'Easy/problemList.txt')
+        filenameMedium, headersMedium = urllib.request.urlretrieve(urlMedium, filename= base_path / 'Medium/problemList.txt')
+        filenameHard, headersHard = urllib.request.urlretrieve(urlHard, filename= base_path / 'Hard/problemList.txt')
+        print(filenameEasy)
+        print(filenameMedium)
+        print(filenameHard)
         
         f = open(filename)
         print(f.read())
