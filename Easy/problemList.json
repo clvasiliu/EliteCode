@@ -2,11 +2,11 @@
 	"0": {
 		"name": "sumGame",
 		"url": "https://raw.githubusercontent.com/clvasiliu/EliteCode/main/Easy/sumGame.py",
-		"testurl": "https://raw.githubusercontent.com/clvasiliu/EliteCode/main/Easy/testSumGame.py"
+		"testurl": "https://raw.githubusercontent.com/clvasiliu/EliteCode/main/Easy/testsumGame.py"
 	},
 	"1": {
 		"name": "sumGame2",
         	"url": "https://raw.githubusercontent.com/clvasiliu/EliteCode/main/Easy/sumGame2.py",
-        	"testurl": "https://raw.githubusercontent.com/clvasiliu/EliteCode/main/Easy/testSumGame2.py"
+        	"testurl": "https://raw.githubusercontent.com/clvasiliu/EliteCode/main/Easy/testsumGame2.py"
 	}
 }
