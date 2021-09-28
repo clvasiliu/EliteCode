@@ -28,12 +28,12 @@ class EliteCode:
         
         f = open(filenameEasy)
         jsonData = json.load(f)
-        print(jsonData[0])
+        print(len(jsonData))
         
         # using https://gist.github.com/oculushut/193a7c2b6002d808a791
         #pick n random numbers within the num problems in the fetched file and make sure they are not the same
         for i in range(0, numProblems):
-            newRand = random.randrange(0, len(fileFetched))
+            newRand = random.randrange(0, len(jsonData))
             if newRand not in indicies:
                 indicies.append(newRand)
                 problems.append(problemList[i])
