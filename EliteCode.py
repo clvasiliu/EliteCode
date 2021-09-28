@@ -19,6 +19,9 @@ class CircularLinkedList:
 
     def setPtr(self, num):
         self.currPtr = num
+
+    def getIndex(self):
+        return self.currPtr
         
     def curr(self):
         return self.items[self.currPtr]
@@ -114,10 +117,12 @@ class EliteCode:
         btn_start = tk.Button(fr_buttons, text="Start Practicing", command=lambda: EliteCode.startCountdown(timeLimit, label, problems, txt_edit, window, problemsMD))
         btn_next = tk.Button(fr_buttons, text="Next Problem", command=lambda: EliteCode.openNextProblem(problems, txt_edit, window))
         btn_save = tk.Button(fr_buttons, text="Save", command=lambda: EliteCode.saveProblemFile(problems.curr(), txt_edit, window))
+        btn_test = tk.Button(fr_buttons, text="Run Tests", command=lambda: EliteCode.testProblem(problemsMD[problems.getIndex()]))
         
         btn_start.grid(row=1, column=0, sticky="ew", padx=5, pady=15)
         btn_next.grid(row=2, column=0, sticky="ew", padx=5, pady=5)
         btn_save.grid(row=3, column=0, sticky="ew", padx=5, pady=5)
+        btn_test.grid(row=4, column=0, sticky="ew", padx=5, pady=5)
 
         fr_buttons.grid(row=0, column=0, sticky="ns")
         txt_edit.grid(row=0, column=1, sticky="nsew")
@@ -148,7 +153,8 @@ class EliteCode:
         print(problemMD['name'])
         print(("Problems." + problemMD["name"]))
         __currProblem = __import__(("Problems." + problemMD["name"]), globals(), locals(), [problemMD["name"]], 0)
-        print(__currProblem(1, 2))
+        __function = getattr(__currProblem, problemMD["name"])
+        print(__function(1, 2))
 
     def testCode(problems, problemsMD):
         #do stuff
