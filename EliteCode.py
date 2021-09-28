@@ -3,6 +3,7 @@
 
 import urllib.request
 import random
+import json
 from pathlib import Path
 
 class EliteCode:
@@ -11,20 +12,23 @@ class EliteCode:
         problems = []
         indicies = []
         #fetch list of problems
-        urlEasy = "https://raw.githubusercontent.com/clvasiliu/EliteCode/main/Easy/problemList.txt"
-        urlMedium = "https://raw.githubusercontent.com/clvasiliu/EliteCode/main/Medium/problemList.txt"
-        urlHard = "https://raw.githubusercontent.com/clvasiliu/EliteCode/main/Hard/problemList.txt"
+        urlEasy = "https://raw.githubusercontent.com/clvasiliu/EliteCode/main/Easy/problemList.json"
+        urlMedium = "https://raw.githubusercontent.com/clvasiliu/EliteCode/main/Medium/problemList.json"
+        urlHard = "https://raw.githubusercontent.com/clvasiliu/EliteCode/main/Hard/problemList.json"
         print("Fetching latest problem list")
         base_path = Path(__file__).parent
-        filenameEasy, headersEasy = urllib.request.urlretrieve(urlEasy, filename= base_path / 'Easy/problemList.txt')
-        filenameMedium, headersMedium = urllib.request.urlretrieve(urlMedium, filename= base_path / 'Medium/problemList.txt')
-        filenameHard, headersHard = urllib.request.urlretrieve(urlHard, filename= base_path / 'Hard/problemList.txt')
+
+        #fetch the updated problem lists
+        filenameEasy, headersEasy = urllib.request.urlretrieve(urlEasy, filename= base_path / 'Easy/problemList.json')
+        filenameMedium, headersMedium = urllib.request.urlretrieve(urlMedium, filename= base_path / 'Medium/problemList.json')
+        filenameHard, headersHard = urllib.request.urlretrieve(urlHard, filename= base_path / 'Hard/problemList.json')
         print(filenameEasy)
         print(filenameMedium)
         print(filenameHard)
         
-        f = open(filename)
-        print(f.read())
+        f = open(filenameEasy)
+        jsonData = json.load(f)
+        print(jsonData[0])
         
         # using https://gist.github.com/oculushut/193a7c2b6002d808a791
         #pick n random numbers within the num problems in the fetched file and make sure they are not the same
@@ -44,4 +48,5 @@ class EliteCode:
         fetchRandomProblems(numProblems, difficulties)
         for problem in problems:
             loadProblem(problem)
-            
+
+EliteCode.fetchRandomProblems(2, [1])
