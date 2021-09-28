@@ -17,6 +17,9 @@ class CircularLinkedList:
         self.items = items
         self.currPtr = 0
 
+    def setPrt(self, num):
+        self.currPtr = num
+        
     def curr(self):
         return self.items[self.currPtr]
         
@@ -95,7 +98,7 @@ class EliteCode:
             output_file.write(text)
         window.title(f"EliteCode - Save Complete")
         
-    def loadProblem(problems, timeLimit):
+    def loadProblem(problems, timeLimit, problemsMD):
         # somehow open the problem on screen -- with timer and allowing person to edit
         window = tk.Tk()
         window.title("EliteCode")
@@ -108,9 +111,9 @@ class EliteCode:
         label = tk.Label(fr_buttons, text="xxx", fg="Red")
         label.grid(row=0, column=0, sticky='ew', padx=5)
         
-        btn_start = tk.Button(fr_buttons, text="Start Practicing", command=lambda: EliteCode.startCountdown(timeLimit, label, problems.curr(), problems.next(), txt_edit, window))
+        btn_start = tk.Button(fr_buttons, text="Start Practicing", command=lambda: EliteCode.startCountdown(timeLimit, label, problems, txt_edit, window, problemsMD))
         btn_next = tk.Button(fr_buttons, text="Next Problem", command=lambda: EliteCode.openNextProblem(problems.curr(), problems.next(), txt_edit, window))
-        btn_save = tk.Button(fr_buttons, text="Save", command=lambda: EliteCode.saveProblemFile(problems.curr(), txt_edit, window))
+        btn_save = tk.Button(fr_buttons, text="Save", command=lambda: EliteCode.saveProblemFile(problems.curr, txt_edit, window))
         
         btn_start.grid(row=1, column=0, sticky="ew", padx=5, pady=15)
         btn_next.grid(row=2, column=0, sticky="ew", padx=5, pady=5)
@@ -121,32 +124,39 @@ class EliteCode:
 
         window.mainloop()
 
-    def startCountdown(timeLimit, label, currProblem, problem, txt_edit, window):
-        EliteCode.openNextProblem(currProblem, problem, txt_edit, window)
-        EliteCode.countdown(timeLimit, label, window)
+    def startCountdown(timeLimit, label, problems, txt_edit, window, problemsMD):
+        EliteCode.openNextProblem(problems.curr(), problems.next(), txt_edit, window)
+        EliteCode.countdown(timeLimit, label, window, problems, txt_edit, problemsMD)
 
     # taken from:
     # https://stackoverflow.com/questions/34029223/basic-tkinter-countdown-timer
-    def countdown(count, label, window):
+    def countdown(count, label, window, problems, txt_edit, problemsMD):
         # change text in label        
         label['text'] = count
 
         if count > 0:
             # call countdown again after 60000ms (1min)
-            window.after(60000, EliteCode.countdown, count-1, label, window)
+            window.after(60000, EliteCode.countdown, count-1, label, window, problems, txt_edit, problemsMD)
         else:
-            ptr = problems.curr()
-            while problems.next() != ptr:
-                EliteCode.saveProblemFile(problems.curr(), txt_edit, window)
-            EliteCode.testCode()
+            EliteCode.saveProblemFile(problems.curr(), txt_edit, window)
+            txt_edit.delete(1.0, tk.END)
+            EliteCode.testCode(problems, problemsMD)
 
-    def testCode():
+    def testCode(problems, problemsMD):
         #do stuff
+        #print(Problems.(problems.curr)(1, 2))
+        problems.setPtr(0)
+        problemsMD.setPtr(0)
+        ptr = problems.curr()
+        print(problems.curr())
+        while problems.next() != ptr:
+            print(problems.curr())
+            __import__("from Problems." + (problems.curr()['name']) + "import Problems")
         print("testing code")
     
     def startTest(numProblems = 2, timeLimit = 115, difficulties = [1, 1]):
         problems = EliteCode.fetchRandomProblems(numProblems, difficulties)
         problemFps = EliteCode.downloadProblems(problems)
-        EliteCode.loadProblem(problemFps, timeLimit)
+        EliteCode.loadProblem(problemFps, timeLimit, problems)
 
-EliteCode.startTest()
+EliteCode.startTest(timeLimit = 1)
