@@ -82,7 +82,6 @@ class EliteCode:
             print("Now Downloading:")
             print("test" + problem['name'])
             problemUrl = problem["testurl"]
-            print(problemUrl)
             filename, headers = urllib.request.urlretrieve(problemUrl, filename= base_path / ('Tests/test' + problem['name'] + '.py'))
             fps.append(filename)
         return CircularLinkedList(fps)
