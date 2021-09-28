@@ -1,12 +1,12 @@
 {
 	"0": {
 		"name": "sumGame",
-		"url": "https://raw.githubusercontent.com/clvasiliu/EliteCode/main/Easy/sum.py",
+		"url": "https://raw.githubusercontent.com/clvasiliu/EliteCode/main/Easy/sumGame.py",
 		"solutions": "Not assigned yet"
 	},
 	"1": {
 		"name": "sumGame2",
-        "url": "https://raw.githubusercontent.com/clvasiliu/EliteCode/main/Easy/sum.py",
+        "url": "https://raw.githubusercontent.com/clvasiliu/EliteCode/main/Easy/sumGame2.py",
         "solutions": "Not assigned yet"
 	}
 }
