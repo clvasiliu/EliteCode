@@ -1,9 +1,14 @@
 {
 	"easyProblems": [
 		{
-		"name": "sumGame",
-		"url": "https://raw.githubusercontent.com/clvasiliu/EliteCode/main/Easy/sum.py"
-		"solutions": "Not assigned yet"
+			"name": "sumGame",
+			"url": "https://raw.githubusercontent.com/clvasiliu/EliteCode/main/Easy/sum.py",
+			"solutions": "Not assigned yet"
+		},
+		{
+			"name": "placeholder",
+			"url": "dne",
+			"solutions": "dne"
 		}
 	]
 }
