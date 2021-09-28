@@ -113,7 +113,7 @@ class EliteCode:
         
         btn_start = tk.Button(fr_buttons, text="Start Practicing", command=lambda: EliteCode.startCountdown(timeLimit, label, problems, txt_edit, window, problemsMD))
         btn_next = tk.Button(fr_buttons, text="Next Problem", command=lambda: EliteCode.openNextProblem(problems.curr(), problems.next(), txt_edit, window))
-        btn_save = tk.Button(fr_buttons, text="Save", command=lambda: EliteCode.saveProblemFile(problems.curr, txt_edit, window))
+        btn_save = tk.Button(fr_buttons, text="Save", command=lambda: EliteCode.saveProblemFile(problems.curr(), txt_edit, window))
         
         btn_start.grid(row=1, column=0, sticky="ew", padx=5, pady=15)
         btn_next.grid(row=2, column=0, sticky="ew", padx=5, pady=5)
@@ -125,8 +125,10 @@ class EliteCode:
         window.mainloop()
 
     def startCountdown(timeLimit, label, problems, txt_edit, window, problemsMD):
-        EliteCode.openNextProblem(problems.curr(), problems.next(), txt_edit, window)
-        EliteCode.countdown(timeLimit, label, window, problems, txt_edit, problemsMD)
+        if label['text'] == "xxx":
+            print("Starting Exam")
+            EliteCode.openNextProblem(problems.curr(), problems.next(), txt_edit, window)
+            EliteCode.countdown(timeLimit, label, window, problems, txt_edit, problemsMD)
 
     # taken from:
     # https://stackoverflow.com/questions/34029223/basic-tkinter-countdown-timer
@@ -142,15 +144,18 @@ class EliteCode:
             txt_edit.delete(1.0, tk.END)
             EliteCode.testCode(problems, problemsMD)
 
+    def testProblem(problemMD):
+        print(problemMD['name'])
+        __currProblem = __import__("Problems." + problemMD["name"], globals(), locals(), [], 0)
+        print(__currProblem.Problem.problemMD["name"](1, 2))
+
     def testCode(problems, problemsMD):
         #do stuff
         #print(Problems.(problems.curr)(1, 2))
         problems.setPtr(0)
-        problemsMDs.setPtr(0)
-        ptr = problemsMD.curr()
-        while problemsMD.next() != ptr:
-            print(problemsMD.curr())
-            __import__("from Problems." + (problemsMD.curr()['name']) + "import Problems")
+        for problemMD in problemsMD:
+            print(problemMD)
+            EliteCode.testProblem(problemMD)
         print("testing code")
     
     def startTest(numProblems = 2, timeLimit = 115, difficulties = [1, 1]):
