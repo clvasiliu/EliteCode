@@ -8,6 +8,7 @@ import urllib.request
 import random
 import json
 import tkinter as tk
+from importlib import reload 
 from tkinter.filedialog import askopenfilename, asksaveasfilename
 
 from pathlib import Path
@@ -167,27 +168,31 @@ class EliteCode:
         else:
             EliteCode.saveProblemFile(problems.curr(), txt_edit, window, label)
             txt_edit.delete(1.0, tk.END)
-            EliteCode.testCode(problems, problemsMD, testResults, testFps, txt_edit, window, label, testFps)
+            EliteCode.testCode(problems, problemsMD, testResults, testFps, txt_edit, window, label)
 
     def testProblem(problemMD, problem, testResults, txt_edit, window, label, testFps):
+        testResults['text'] = ""
         if label['text'] != "xxx":
             EliteCode.saveProblemFile(problem, txt_edit, window, label)
             print("Running tests for:")
             print(problemMD['name'])
             __currTests = __import__(("Tests.test" + problemMD["name"]), globals(), locals(), ["test" + problemMD["name"]], 0)
+            reload(__currTests)
             __currProblem = __import__(("Problems." + problemMD["name"]), globals(), locals(), [problemMD["name"]], 0)
+            reload(__currProblem)
             __functionTest = getattr(__currTests, "test" + problemMD["name"])
             __function = getattr(__currProblem, problemMD["name"])
             result = __functionTest(__function)
+            print(result)
             testResults['text'] = result
             
-    def testCode(problems, problemsMD, testResults, testFps, txt_edit, window, label, testFps):
+    def testCode(problems, problemsMD, testResults, testFps, txt_edit, window, label):
         #do stuff
         #print(Problems.(problems.curr)(1, 2))
         print("Running all tests on code")
         for problemMD in problemsMD:
             print(problemMD)
-            EliteCode.testProblem(problemMD, testResults, testFps, txt_edit, window, label, testFps)
+            EliteCode.testProblem(problemMD, problems.curr(), testResults, txt_edit, window, label, testFps)
     
     def startTest(numProblems = 2, timeLimit = 115, difficulties = [1, 1]):
         problems = EliteCode.fetchRandomProblems(numProblems, difficulties)
